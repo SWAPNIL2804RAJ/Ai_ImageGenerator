@@ -1,20 +1,22 @@
-import React, { useContext } from 'react'
 import { assets } from '../assets/assets'
-import { delay, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { useNavigate } from 'react-router-dom'
+import React, { useContext } from 'react'
+import { AppContext } from '../context/AppContext'
 // import {AppContext} from '../context/AppContext';
 
 
 const Header = () => {
+    const { user, setShowLogin } = useContext(AppContext)  // user is undefined, setShowLogin is undefined
 
     // const { user, setShowLogin } = useContext(AppContext)
     const navigate = useNavigate(); 
     
     const onClickHandler = () => {
-        if(user) {
+        if(user) {  // user is undefined
             navigate('/results')
         } else {
-            setShowLogin(true)
+            setShowLogin(true)  // setShowLogin is undefined
         }
     }
 
@@ -58,13 +60,19 @@ const Header = () => {
         </motion.button>
 
 
-        <motion.div className='flex flex-wrap justify-center mt-16 gap-3'>
-            {Array(5).fill('').map((item, index)=>(
-                <motion.img 
-                    whileHover={{ scale: 1.05, duration: 0.1 }}
-                    className='rounded hover:scale-105 transition-all duration-300 cursor-pointer max-sm::w10' src={index % 2===0 ? assets.sample_img_2 : assets.sample_img_1} alt=' ' width={70}/>
-            ))}
-        </motion.div>
+
+    <motion.div className='flex flex-wrap justify-center mt-16 gap-3'>
+        {Array(5).fill('').map((item, index)=>(
+            <motion.img 
+                key={index} // Add this unique key prop
+                whileHover={{ scale: 1.05, duration: 0.1 }}
+                className='rounded hover:scale-105 transition-all duration-300 cursor-pointer max-sm::w10' 
+                src={index % 2===0 ? assets.sample_img_2 : assets.sample_img_1} 
+                alt=' ' 
+                width={70}
+            />
+        ))}
+    </motion.div>
         <motion.p
             initial={{ opacity: 0}}
             animate={{ opacity: 1}}

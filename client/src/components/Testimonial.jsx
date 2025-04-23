@@ -1,6 +1,6 @@
 import React from 'react'
 import { assets, testimonialsData } from '../assets/assets'
-import {delay, motion} from 'motion/react'
+import {motion} from 'motion/react'
 
 const Testimonial = () => {
   return (
@@ -20,11 +20,11 @@ const Testimonial = () => {
               <img src={testimonial.image} alt='' className='rounded-full w-14' />
               <h2 className='text-xl font-semibold mt-3'>{testimonial.name}</h2>
               <p className='text-gray-500 mb-4 '>{testimonial.role}</p>
-              <di className= 'flex mb-4'>
+              <div className= 'flex mb-4'>
                 {Array(testimonial.stars).fill().map((item, index) => (
                   <img key={index} src={assets.rating_star} alt="" />
                 ))}
-              </di>
+              </div>
             <p className='text-center text-sm text-gray-600' >{testimonial.text}</p>
           </div>
       </div> 

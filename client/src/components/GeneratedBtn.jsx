@@ -8,7 +8,7 @@ const GeneratedBtn = () => {
   
   const navigate = useNavigate()
   return (
-    <div
+    <motion.div
     initial={{ opacity: 0.2, y:100 }}
     transition={{ duration: 1 }}
     whileInView={{ opacity: 1, y: 0 }}
@@ -22,7 +22,7 @@ const GeneratedBtn = () => {
         Subscription
         <img src={assets.star_group} alt='' className='h-6'/>
       </button>
-    </div>
+    </motion.div>
   )
 }
 

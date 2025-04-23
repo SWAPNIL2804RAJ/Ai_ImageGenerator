@@ -1,4 +1,4 @@
-// import jwt from 'jsonwebtoken';
+ // import jwt from 'jsonwebtoken';
 
 // const authUser = async (req, res, next) => {
 //     // console.log(req);
@@ -74,38 +74,32 @@ import jwt from 'jsonwebtoken';
 
 const authUser = async (req, res, next) => {
     try {
-        // Get token from header - check both standard and custom formats
-        const token = req.headers.token || 
-                     (req.headers.authorization && req.headers.authorization.startsWith('Bearer ') 
-                      ? req.headers.authorization.split(' ')[1] : null);
+        // Get token from header with better extraction
+        const authHeader = req.headers.authorization;
         
-        console.log('Headers received:', req.headers); // Log all headers for debugging
-        console.log('Token extracted:', token ? 'Yes' : 'No'); // Debug logging
-        
-        if (!token) {
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({ success: false, message: 'Authentication token missing' });
         }
 
-        // Verify the token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const token = authHeader.split(' ')[1];
         
-        if (decoded && decoded.id) {
-            // Set the user ID on both req.userId and req.body.userId for compatibility
+        // Verify the token with explicit error handling
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            
+            if (!decoded.id) {
+                return res.status(401).json({ success: false, message: 'Invalid token format' });
+            }
+            
+            // Set the user ID correctly
             req.userId = decoded.id;
-            req.body.userId = decoded.id;
             next();
-        } else {
-            return res.status(401).json({ success: false, message: 'Invalid token format' });
+        } catch (jwtError) {
+            console.error('JWT verification error:', jwtError);
+            return res.status(401).json({ success: false, message: 'Invalid token' });
         }
     } catch (error) {
         console.error('Auth middleware error:', error);
-        
-        if (error.name === 'JsonWebTokenError') {
-            return res.status(401).json({ success: false, message: 'Invalid token' });
-        } else if (error.name === 'TokenExpiredError') {
-            return res.status(401).json({ success: false, message: 'Token expired' });
-        }
-        
         return res.status(500).json({ success: false, message: 'Authentication error' });
     }
 };
